@@ -1,5 +1,6 @@
 import React from "react";
 import MemberPortal from "../MemberPortal/MemberPortal"
+import style from "./HomePage.module.css"
 
 class HomePage extends React.Component {
   state = {
@@ -30,7 +31,7 @@ class HomePage extends React.Component {
 
     return (
       <div>
-        <div className="radio-buttons">
+        <div className={style.radioButtons}>
           {radioButtonsArray.map((obj) => (
             <div key={obj.id}>
               <label htmlFor={obj.button}>{obj.text}</label>

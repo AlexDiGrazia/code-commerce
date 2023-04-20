@@ -1,10 +1,10 @@
 import React from "react";
-import "./Shipping.css";
+import style from "./Shipping.module.css";
 
 class Shipping extends React.Component {
   render() {
     return (
-      <div className="orange">
+      <div className={style.orange}>
         <input
           type="button"
           onClick={() => this.props.nextPage("cart")}

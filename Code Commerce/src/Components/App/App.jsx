@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import style from "./App.module.css";
 import Login from "../Login/Login";
 import SignUp from "../SignUp/SignUp";
 import MemberPortal from "../MemberPortal/MemberPortal";

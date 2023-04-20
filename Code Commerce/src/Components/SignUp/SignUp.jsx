@@ -1,5 +1,5 @@
 import React from 'react';
-import './SignUp.css'
+import style from './SignUp.module.css'
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class SignUp extends React.Component {
   }
   render() {
     return(
-      <div className="red">
+      <div className={style.red}>
         sign up
       </div>
     )

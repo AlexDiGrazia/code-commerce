@@ -1,12 +1,12 @@
 import React from 'react';
-import './Login.css'
+import style from './Login.module.css'
 
 
 class Login extends React.Component {
   
   render() {
     return(
-      <div className="blue">
+      <div className={style.blue}>
         <input 
           type="button"
           onClick={() => this.props.nextPage('cart')} 

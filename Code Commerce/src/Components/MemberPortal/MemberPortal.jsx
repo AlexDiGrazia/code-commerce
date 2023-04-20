@@ -1,5 +1,5 @@
 import React from 'react';
-import './MemberPortal.css'
+import style from './MemberPortal.module.css'
 import Login from '../Login/Login';
 import SignUp from '../SignUp/SignUp';
 

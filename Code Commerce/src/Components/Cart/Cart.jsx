@@ -1,11 +1,11 @@
 import React from 'react';
-import './Cart.css'
+import style from './Cart.module.css'
 
 class Cart extends React.Component {
   
   render() {
     return(
-      <div className="green">
+      <div className={style.green}>
        <input 
           type="button"
           onClick={() => this.props.nextPage('home-page')} 

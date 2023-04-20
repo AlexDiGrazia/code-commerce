@@ -1,12 +1,12 @@
 import React from 'react';
-import './Confirmation.css'
+import style from './Confirmation.module.css'
 
 
 class Confirmation extends React.Component {
   
   render() {
     return(
-      <div className="brown">
+      <div className={style.brown}>
         <input 
           type="button"
           onClick={() => this.props.nextPage('payment')} 
