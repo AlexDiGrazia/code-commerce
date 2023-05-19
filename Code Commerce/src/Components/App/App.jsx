@@ -2,12 +2,12 @@ import React from "react";
 import style from "./App.module.css";
 import Login from "../Login/Login";
 import SignUp from "../SignUp/SignUp";
-import MemberPortal from "../MemberPortal/MemberPortal";
 import HomePage from "../HomePage/HomePage";
 import Cart from "../Cart/Cart";
 import Shipping from "../Shipping/Shipping";
 import Payment from "../Payment/Payment"
 import Confirmation from "../Confirmation/Confirmation";
+import "../Main/index.css";
 
 
 class App extends React.Component {

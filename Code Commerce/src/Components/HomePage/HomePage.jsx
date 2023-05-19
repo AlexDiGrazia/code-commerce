@@ -1,57 +1,65 @@
 import React from "react";
-import MemberPortal from "../MemberPortal/MemberPortal"
-import style from "./HomePage.module.css"
+import style from "./HomePage.module.css";
+import SignUp from "../SignUp/SignUp";
+import Login from "../Login/Login";
 
 class HomePage extends React.Component {
   state = {
-    doesUserExist: 'yes',
-  }
+    homePageState: "login",
+  };
 
   render() {
-    const { doesUserExist } = this.state;
+    const userData = {
+      username: "Alex DiGrazia",
+      email: "alexdigrazia@gmail.com",
+      password: "iluvdogs<3",
+    };
+
+    const { homePageState } = this.state;
     const { nextPage } = this.props;
     const radioButtonsArray = [
       {
-        button: 'login',
-        text: 'Login',
-        page: 'login',
-        group: 'select-login-or-create-account',
-        id: 'login',
-        bool: 'yes'
+        button: "login",
+        text: "Login",
+        page: "login",
+        group: "select-login-or-create-account",
+        id: "login",
+        bool: "login",
       },
       {
-        button: 'create-account',
-        text: 'Create Account',
-        page: 'create-account',
-        group: 'select-login-or-create-account',
-        id: 'create-account',
-        bool: 'no'
-      }
-    ]
+        button: "create-account",
+        text: "Create Account",
+        page: "create-account",
+        group: "select-login-or-create-account",
+        id: "create-account",
+        bool: "signup",
+      },
+    ];
 
     return (
-      <div>
+      <div className={style.container}>
         <div className={style.radioButtons}>
           {radioButtonsArray.map((obj) => (
             <div key={obj.id}>
               <label htmlFor={obj.button}>{obj.text}</label>
-              <input 
-                onChange={() => this.setState({ doesUserExist: obj.bool})}
-                name="select-login-or-create-account" 
-                id={obj.id} 
-                type="radio">
-              </input>
+              <input
+                onChange={() => this.setState({ homePageState: obj.bool })}
+                name="select-login-or-create-account"
+                id={obj.id}
+                type="radio"
+              ></input>
             </div>
           ))}
         </div>
-        
-        <MemberPortal 
-          doesUserExist={doesUserExist}
-          nextPage={nextPage}
-          />
+
+        {this.state.homePageState === "login" ? (
+          <Login nextPage={nextPage} userData={userData} />
+        ) : (
+          <SignUp nextPage={nextPage} userData={userData}/>
+        )}
       </div>
     );
   }
 }
 
-export default HomePage
+export default HomePage;

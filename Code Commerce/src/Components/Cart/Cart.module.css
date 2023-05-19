@@ -1,5 +1,53 @@
-.green {
-  width: 100px;
-  height: 100px;
-  background-color: green;
+.cart {
+  /* width: 700px;
+  height: 500px; */
+  background-color: rgb(237, 218, 218);
+  padding: 50px 30px;
 }
+
+.item {
+  padding: 20px 30px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  background: rgb(94, 93, 93);
+}
+
+.numbers {
+  margin-left: auto;
+  display: flex;
+}
+
+.numbers h2 {
+  margin: 0 20px 0 20px;
+}
+
+.totalItems {
+  color:black;
+  background: grey;
+  font-size: 20px;
+}
+
+.totalPrice {
+  color:black;
+  background: grey;
+  font-size: 20px;
+}
+
+.flexContainer {
+  display: flex;
+}
+
+.right {
+  margin-left: 30px;
+  padding: 5px 20px;
+}
+
+.errorMessage {
+  max-width: 89%;
+  color: #a21616;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
