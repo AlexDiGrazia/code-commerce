@@ -108,23 +108,13 @@ class Cart extends React.Component {
     return (
       <div className={style.cart}>
         <input
+          className={style.returnHome}
           type="button"
           onClick={() => this.props.nextPage("home-page")}
           value="back to Home"
         />
         <div className={style.flexContainer}>
           <div className={style.left}>
-            <div className={style.item}>
-              <div className={style.imageAndInfo}>
-                <h2>Product</h2>
-              </div>
-              <div className={style.numbers}>
-                <h2>Price</h2>
-                <h2>Quantity</h2>
-                <h2>Total Price</h2>
-              </div>
-            </div>
-
             {itemsArray.map(
               (item) =>
                 this.state.display[item.product] === "visible" && (
@@ -136,6 +126,7 @@ class Cart extends React.Component {
                       <div>
                         <h6>{item.headerSixText}</h6>
                         <p>{item.paraText}</p>
+                        <p>{formatToUSDCurrency(item.price)}</p>
                       </div>
                     }
                     price={item.price}
@@ -165,6 +156,7 @@ class Cart extends React.Component {
                 `}
             </p>
             <input
+              className={style.nextShipping}
               name="checkout"
               type="button"
               onClick={() => {

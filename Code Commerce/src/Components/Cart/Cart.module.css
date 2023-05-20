@@ -5,6 +5,11 @@
   padding: 50px 30px;
 }
 
+.returnHome {
+  margin-bottom: 15px;
+  
+}
+
 .item {
   padding: 20px 30px;
   margin: 15px 0;
@@ -22,18 +27,6 @@
   margin: 0 20px 0 20px;
 }
 
-.totalItems {
-  color:black;
-  background: grey;
-  font-size: 20px;
-}
-
-.totalPrice {
-  color:black;
-  background: grey;
-  font-size: 20px;
-}
-
 .flexContainer {
   display: flex;
 }
@@ -41,13 +34,35 @@
 .right {
   margin-left: 30px;
   padding: 5px 20px;
+  background-color: #5d5d5d;
+  height: fit-content;
+  padding: 16px 20px;
+  border-radius: 3px;
+}
+
+.right p {
+  color: white;
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.nextShipping,
+.returnHome {
+  background-color: #3b3b3b;
+  padding: 5px;
+  font-size: 16;
+  font-weight: 500;
+  border-radius: 3px;
 }
 
 .errorMessage {
   max-width: 89%;
-  color: #a21616;
+  color: #7e1e1e;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 0;
+  text-shadow: 0px 0px 25px #ffffff61;
+  font-size: 16px;
+
 }
 

@@ -3,9 +3,6 @@ import style from "./CartItem.module.css";
 import { formatToUSDCurrency } from "../../JS/functions";
 
 class CartItem extends React.Component {
-  
-  
-
   render() {
     const {
       description,
@@ -33,27 +30,36 @@ class CartItem extends React.Component {
           </div>
           <div className={style.description}>{description}</div>
         </div>
+
         <div className={style.numbers}>
-          <div className={style.price}>{formatToUSDCurrency(price)}</div>
-          <select
-            defaultValue="1"
-            name={selectName}
-            id={selectId}
-            onChange={selectorOnChange}
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-          </select>
-          <div className={style.totalPrice}>{formatToUSDCurrency(quantity * price)}</div>
+          <div className={style.quantity}>
+            Qty:
+            <select
+              className={style.selector}
+              defaultValue="1"
+              name={selectName}
+              id={selectId}
+              onChange={selectorOnChange}
+            >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div className={style.totalPrice}>
+            {`
+              Total: 
+              ${formatToUSDCurrency(quantity * price)}
+            `}
+          </div>
         </div>
       </div>
     );
