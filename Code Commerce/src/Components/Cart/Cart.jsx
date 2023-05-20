@@ -35,7 +35,6 @@ class Cart extends React.Component {
         ...prevState.quantity,
         [product]: +e.target.value,
       },
-      emptyCartError: "",
     }));
   };
 
@@ -171,6 +170,7 @@ class Cart extends React.Component {
                 this.setErrorMessage();
                 this.getCartTotal() > 0 && this.props.nextPage("shipping");
               }}
+              onBlur={() => this.setState({ emptyCartError: "",})}
               value="next to shipping"
             />
             <br />
