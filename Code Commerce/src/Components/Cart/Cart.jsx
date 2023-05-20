@@ -2,6 +2,7 @@ import React from "react";
 import style from "./Cart.module.css";
 import CartItem from "../CartItem/CartItem";
 import { PHOTOS } from "../../Photos/photos";
+import { formatToUSDCurrency } from "../../JS/functions";
 
 class Cart extends React.Component {
   state = {
@@ -155,12 +156,12 @@ class Cart extends React.Component {
             <p className={style.totalPrice}>
               {`
                   Total: 
-                    ${Object.entries(this.state.quantity).reduce(
+                    ${formatToUSDCurrency(Object.entries(this.state.quantity).reduce(
                       (total, [key, value]) => {
                         return total + value * this.state.price[key];
                       },
                       0
-                    )}
+                    ))}
                 `}
             </p>
             <input

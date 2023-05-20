@@ -1,7 +1,11 @@
 import React from "react";
 import style from "./CartItem.module.css";
+import { formatToUSDCurrency } from "../../JS/functions";
 
 class CartItem extends React.Component {
+  
+  
+
   render() {
     const {
       description,
@@ -30,7 +34,7 @@ class CartItem extends React.Component {
           <div className={style.description}>{description}</div>
         </div>
         <div className={style.numbers}>
-          <div className={style.price}>{price}</div>
+          <div className={style.price}>{formatToUSDCurrency(price)}</div>
           <select
             defaultValue="1"
             name={selectName}
@@ -49,7 +53,7 @@ class CartItem extends React.Component {
             <option value="9">9</option>
             <option value="10">10</option>
           </select>
-          <div className={style.totalPrice}>{quantity * price}</div>
+          <div className={style.totalPrice}>{formatToUSDCurrency(quantity * price)}</div>
         </div>
       </div>
     );
