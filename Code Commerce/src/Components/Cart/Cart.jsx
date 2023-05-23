@@ -5,6 +5,9 @@ import { PHOTOS } from "../../Photos/photos";
 import { formatToUSDCurrency } from "../../JS/functions";
 import InputBase from "../InputBase/InputBase";
 import InvoiceLine from "../InvoiceLine/InvoiceLine";
+import Bag from "../Bag/Bag";
+import Shipping from "../Shipping/Shipping";
+
 
 class Cart extends React.Component {
   state = {
@@ -32,7 +35,12 @@ class Cart extends React.Component {
     emptyCartError: "",
     discountPercentage: "",
     promoCode: "",
+    screenOnDisplay: "bag",
   };
+
+  setDisplayScreen = (component) => {
+    this.setState({ screenOnDisplay: component})
+  }
 
   setQuantity = (e, product) => {
     this.setState((prevState) => ({
@@ -66,48 +74,15 @@ class Cart extends React.Component {
   };
 
   render() {
-    const itemsArray = [
-      {
-        photo: "LesPaul",
-        alt: "Gibson Les Paul",
-        headerSixText: "Gibson Les Paul",
-        paraText: "Color: Cherry Burst",
-        price: 3000,
-        product: "guitar",
-      },
-      {
-        photo: "Picks",
-        alt: "Dunlop Guitar Picks",
-        headerSixText: "Dunlop Guitar Picks",
-        paraText: "Color: Assorted",
-        price: 25,
-        product: "picks",
-      },
-      {
-        photo: "QuarterInchCable",
-        alt: "Quarter Inch Cable",
-        headerSixText: "Quarter Inch Guitar Cable",
-        paraText: "Length: 6ft",
-        price: 30,
-        product: "cable",
-      },
-      {
-        photo: "Wah",
-        alt: "Ernie Ball Wah Pedal",
-        headerSixText: "Ernie Ball",
-        paraText: "Wah Pedal",
-        price: 200,
-        product: "wah",
-      },
-      {
-        photo: "Marshall",
-        alt: "Marshall Combo Amp",
-        headerSixText: "Marshall",
-        paraText: "JVM210C 100W Combo Amp",
-        price: 3100,
-        product: "marshall",
-      },
-    ];
+    const {
+      quantity,
+      display,
+      price,
+      emptyCartError,
+      discountPercentage,
+      promoCode,
+      screenOnDisplay,
+    } = this.state;
 
     const promoInputs = [
       {
@@ -126,28 +101,29 @@ class Cart extends React.Component {
         placeholder: null,
         classList: style.applyPromoButton,
         onClick: () => {
-          const percent = this.state.promoCode === "TWENTY" && 0.2;
+          const percent = promoCode === "TWENTY" && 0.2;
           this.setState({ discountPercentage: percent });
         },
       },
     ];
 
-    const subTotal = Object.entries(this.state.quantity).reduce(
-      (total, [key, value]) => {
-        return total + value * this.state.price[key];
-      },
-      0
-    );
+    const subTotal = Object.entries(quantity).reduce((total, [key, value]) => {
+      return total + value * price[key];
+    }, 0);
 
-    const discount = this.state.discountPercentage
-      ? subTotal * this.state.discountPercentage
-      : "-";
+    const discount = discountPercentage ? subTotal * discountPercentage : "-";
 
     const total = Number.isInteger(discount) ? subTotal - discount : subTotal;
 
     const invoiceInfo = [
       {
-        name: "Cart Subtotal:",
+        name: "Cart:",
+        price: `${Object.values(this.state.quantity).reduce(
+          (a, b) => a + b
+        )} items`,
+      },
+      {
+        name: "Subtotal:",
         price: formatToUSDCurrency(subTotal),
       },
       {
@@ -159,10 +135,24 @@ class Cart extends React.Component {
         price: formatToUSDCurrency(discount),
       },
       {
-        name: "Cart Total:",
+        name: "Total:",
         price: formatToUSDCurrency(total),
       },
     ];
+
+    const componentsObject = {
+      bag: (
+        <Bag
+          display={display}
+          quantity={quantity}
+          setQuantity={(e, product) => this.setQuantity(e, product)}
+          removeItem={(product) => this.removeItem(product)}
+        />
+      ),
+      shipping: (
+        <Shipping />
+        )
+    };
 
     return (
       <div className={style.cart}>
@@ -173,37 +163,10 @@ class Cart extends React.Component {
           value="back to Home"
         />
         <div className={style.flexContainer}>
-          <div className={style.left}>
-            {itemsArray.map(
-              (item) =>
-                this.state.display[item.product] === "visible" && (
-                  <CartItem
-                    key={`key-${item.product}`}
-                    src={PHOTOS[item.photo]}
-                    alt={item.alt}
-                    description={
-                      <div>
-                        <h6>{item.headerSixText}</h6>
-                        <p>{item.paraText}</p>
-                        <p>{formatToUSDCurrency(item.price)}</p>
-                      </div>
-                    }
-                    price={item.price}
-                    selectName="item-quantity"
-                    selectId="item-quantity"
-                    selectorOnChange={(e) => this.setQuantity(e, item.product)}
-                    quantity={this.state.quantity[item.product]}
-                    removeItem={() => this.removeItem(item.product)}
-                    setErrorMessage={() => this.setErrorMessage()}
-                  />
-                )
-            )}
-          </div>
+          <div className={style.left}>{componentsObject[screenOnDisplay]}</div>
           <div className={style.right}>
             <h2 className={style.summary}>Summary</h2>
-            {/*  <p className={style.totalItems}>{`Cart: ${Object.values(
-              this.state.quantity
-            ).reduce((a, b) => a + b)} items`}</p> */}
+            <p className={style.totalItems}>{`Cart:  items`}</p>
             <h5 className={style.promoPrompt}>Do you have a Promo Code?</h5>
             <div className={style.promoContainer}>
               {promoInputs.map((obj) => (
@@ -231,7 +194,7 @@ class Cart extends React.Component {
               type="button"
               onClick={() => {
                 this.setErrorMessage();
-                this.getCartTotal() > 0 && this.props.nextPage("shipping");
+                this.getCartTotal() > 0 && this.setDisplayScreen("shipping");
               }}
               onBlur={() => this.setState({ emptyCartError: "" })}
               value="next to shipping"
