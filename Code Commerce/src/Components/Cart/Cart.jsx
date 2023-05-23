@@ -3,6 +3,8 @@ import style from "./Cart.module.css";
 import CartItem from "../CartItem/CartItem";
 import { PHOTOS } from "../../Photos/photos";
 import { formatToUSDCurrency } from "../../JS/functions";
+import InputBase from "../InputBase/InputBase";
+import InvoiceLine from "../InvoiceLine/InvoiceLine";
 
 class Cart extends React.Component {
   state = {
@@ -28,6 +30,8 @@ class Cart extends React.Component {
       marshall: 3100,
     },
     emptyCartError: "",
+    discountPercentage: "",
+    promoCode: "",
   };
 
   setQuantity = (e, product) => {
@@ -105,6 +109,61 @@ class Cart extends React.Component {
       },
     ];
 
+    const promoInputs = [
+      {
+        id: "promo",
+        type: "text",
+        name: "promo",
+        placeholder: "Code",
+        classList: style.promoCodeInput,
+        onChange: (e) => this.setState({ promoCode: e.target.value }),
+      },
+      {
+        id: "applyPromo",
+        type: "button",
+        name: "applyPromo",
+        value: "APPLY",
+        placeholder: null,
+        classList: style.applyPromoButton,
+        onClick: () => {
+          const percent = this.state.promoCode === "TWENTY" && 0.2;
+          this.setState({ discountPercentage: percent });
+        },
+      },
+    ];
+
+    const subTotal = Object.entries(this.state.quantity).reduce(
+      (total, [key, value]) => {
+        return total + value * this.state.price[key];
+      },
+      0
+    );
+
+    const discount = this.state.discountPercentage
+      ? subTotal * this.state.discountPercentage
+      : "-";
+
+    const total = Number.isInteger(discount) ? subTotal - discount : subTotal;  
+
+    const invoiceInfo = [
+      {
+        name: "Cart Subtotal:",
+        price: formatToUSDCurrency(subTotal),
+      },
+      {
+        name: "Shipping & Handling:",
+        price: "-",
+      },
+      {
+        name: "Discount:",
+        price: formatToUSDCurrency(discount),
+      },
+      {
+        name: "Cart Total:",
+        price: formatToUSDCurrency(total),
+      },
+    ];
+
     return (
       <div className={style.cart}>
         <input
@@ -141,20 +200,31 @@ class Cart extends React.Component {
             )}
           </div>
           <div className={style.right}>
-            <p className={style.totalItems}>{`Items in Cart: ${Object.values(
+            <h2 className={style.summary}>Summary</h2>
+            {/*  <p className={style.totalItems}>{`Cart: ${Object.values(
               this.state.quantity
-            ).reduce((a, b) => a + b)}`}</p>
-            <p className={style.totalPrice}>
-              {`
-                  Total: 
-                    ${formatToUSDCurrency(Object.entries(this.state.quantity).reduce(
-                      (total, [key, value]) => {
-                        return total + value * this.state.price[key];
-                      },
-                      0
-                    ))}
-                `}
-            </p>
+            ).reduce((a, b) => a + b)} items`}</p> */}
+            <h5 className={style.promoPrompt}>Do you have a Promo Code?</h5>
+            <div className={style.promoContainer}>
+              {promoInputs.map((obj) => (
+                <InputBase
+                  id={obj.id}
+                  type={obj.type}
+                  name={obj.name}
+                  value={obj.value}
+                  placeholder={obj.placeholder}
+                  classList={obj.classList}
+                  onClick={obj.onClick}
+                  onChange={obj.onChange}
+                />
+              ))}
+            </div>
+            <div className={style.cartInvoice}>
+              {invoiceInfo.map((obj) => (
+                <InvoiceLine name={obj.name} price={obj.price} />
+              ))}
+            </div>
+
             <input
               className={style.nextShipping}
               name="checkout"
@@ -163,7 +233,7 @@ class Cart extends React.Component {
                 this.setErrorMessage();
                 this.getCartTotal() > 0 && this.props.nextPage("shipping");
               }}
-              onBlur={() => this.setState({ emptyCartError: "",})}
+              onBlur={() => this.setState({ emptyCartError: "" })}
               value="next to shipping"
             />
             <br />
