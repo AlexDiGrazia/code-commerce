@@ -143,7 +143,7 @@ class Cart extends React.Component {
       ? subTotal * this.state.discountPercentage
       : "-";
 
-    const total = Number.isInteger(discount) ? subTotal - discount : subTotal;  
+    const total = Number.isInteger(discount) ? subTotal - discount : subTotal;
 
     const invoiceInfo = [
       {
