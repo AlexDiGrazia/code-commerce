@@ -36,7 +36,12 @@ class Cart extends React.Component {
     discountPercentage: "",
     promoCode: "",
     screenOnDisplay: "bag",
+    shipping: 'free',
   };
+
+  handleState = (key, value) => {
+    this.setState({ [key]: value })
+  }
 
   setDisplayScreen = (component) => {
     this.setState({ screenOnDisplay: component})
@@ -82,6 +87,7 @@ class Cart extends React.Component {
       discountPercentage,
       promoCode,
       screenOnDisplay,
+      shipping
     } = this.state;
 
     const promoInputs = [
@@ -113,7 +119,8 @@ class Cart extends React.Component {
 
     const discount = discountPercentage ? subTotal * discountPercentage : "-";
 
-    const total = Number.isInteger(discount) ? subTotal - discount : subTotal;
+    const shippingPrice = shipping === 'free' ? 0 : 5;
+    const total = (Number.isInteger(discount) ? subTotal - discount : subTotal) + shippingPrice;
 
     const invoiceInfo = [
       {
@@ -128,7 +135,7 @@ class Cart extends React.Component {
       },
       {
         name: "Shipping & Handling:",
-        price: "-",
+        price: shipping === "$5.00" ? formatToUSDCurrency(shippingPrice) : "-",
       },
       {
         name: "Discount:",
@@ -151,7 +158,9 @@ class Cart extends React.Component {
       ),
       shipping: (
         <Shipping 
-          setDisplayScreen={(component) => this.setDisplayScreen(component)}/>
+          setDisplayScreen={(component) => this.setDisplayScreen(component)}
+          handleState={this.handleState}
+          />
         )
     };
 
@@ -167,7 +176,7 @@ class Cart extends React.Component {
           <div className={style.left}>{componentsObject[screenOnDisplay]}</div>
           <div className={style.right}>
             <h2 className={style.summary}>Summary</h2>
-            <p className={style.totalItems}>{`Cart:  items`}</p>
+            
             <h5 className={style.promoPrompt}>Do you have a Promo Code?</h5>
             <div className={style.promoContainer}>
               {promoInputs.map((obj) => (

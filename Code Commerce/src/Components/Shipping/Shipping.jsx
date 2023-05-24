@@ -26,7 +26,7 @@ class Shipping extends React.Component {
   // };
 
   render() {
-    const { setDisplayScreen } = this.props;
+    const { setDisplayScreen, handleState } = this.props;
 
     const inputsArray = [
       {
@@ -101,11 +101,13 @@ class Shipping extends React.Component {
         id: "standard",
         description: "Delivery in 4-6 Business Days - Free ($40 min.)",
         defaultChecked: true,
+        shippingState: "free",
       },
       {
         id: "express",
         description: "Delivery in 1-3 Business Days - $5",
         defaultChecked: false,
+        shippingState: "$5.00",
       },
     ];
 
@@ -133,6 +135,7 @@ class Shipping extends React.Component {
               name="shippingMethod"
               id={obj.id}
               defaultChecked={obj.defaultChecked}
+              onChange={() => handleState("shipping", obj.shippingState)}
             />
             <label className={style.marginRight} htmlFor="shippingMethod">
               {obj.id.toUpperCase()}
