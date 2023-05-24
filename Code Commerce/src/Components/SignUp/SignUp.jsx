@@ -163,6 +163,7 @@ class SignUp extends React.Component {
                 <InputBase
                   id={obj.id}
                   type={obj.type}
+                  classList={style.inputWidth}
                   text={obj.text}
                   name={obj.id}
                   value={obj.value}

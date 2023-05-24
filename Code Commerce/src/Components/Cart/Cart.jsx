@@ -150,7 +150,8 @@ class Cart extends React.Component {
         />
       ),
       shipping: (
-        <Shipping />
+        <Shipping 
+          setDisplayScreen={(component) => this.setDisplayScreen(component)}/>
         )
     };
 

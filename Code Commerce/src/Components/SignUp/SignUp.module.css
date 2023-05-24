@@ -6,6 +6,10 @@
   font-weight: 600;
 }
 
+.inputWidth {
+  width: 89%;
+}
+
 .red {
   background: #bc0808;
 }

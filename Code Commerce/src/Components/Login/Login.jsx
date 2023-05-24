@@ -32,6 +32,7 @@ class Login extends React.Component {
         <InputBase 
           id="username"
           text="Username or email"
+          classList={style.inputWidth}
           placeholder="Username or email"
           onChange={(e) => this.setState({ user: e.target.value})}
         />
@@ -39,6 +40,7 @@ class Login extends React.Component {
           <InputBase 
             id="password"
             text="Password"
+            classList={style.inputWidth}
             placeholder="Password"
             name="password"
             onChange={(e) => this.setState({ password: e.target.value})}
