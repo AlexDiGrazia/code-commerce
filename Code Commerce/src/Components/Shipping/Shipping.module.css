@@ -52,4 +52,15 @@ div.jurisdiction {
 
 .shortDiv { width: 200px;}
 
-.flex { display: flex;}
+.flex { 
+  display: flex;
+  align-items: center;
+}
+
+.marginRight {
+  margin-right: 15px;
+}
+
+.paraMargin {
+  margin: 5px;
+}

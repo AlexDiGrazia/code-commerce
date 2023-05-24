@@ -92,9 +92,21 @@ class Shipping extends React.Component {
           id: "telephone",
           type: "text",
           classList: style.phoneNumber,
-          
         },
       ],
+    ];
+
+    const shippingMethods = [
+      {
+        id: "standard",
+        description: "Delivery in 4-6 Business Days - Free ($40 min.)",
+        defaultChecked: true,
+      },
+      {
+        id: "express",
+        description: "Delivery in 1-3 Business Days - $5",
+        defaultChecked: false,
+      },
     ];
 
     return (
@@ -110,8 +122,22 @@ class Shipping extends React.Component {
           </div>
         </div>
         {phoneArrays.map((obj) => (
+          <div className={style.flex}>{this.mapInputBase(obj)}</div>
+        ))}
+        <h2>Shipping Methods</h2>
+        {shippingMethods.map((obj) => (
           <div className={style.flex}>
-            {this.mapInputBase(obj)}
+            <input
+              className={style.marginRight}
+              type="radio"
+              name="shippingMethod"
+              id={obj.id}
+              defaultChecked={obj.defaultChecked}
+            />
+            <label className={style.marginRight} htmlFor="shippingMethod">
+              {obj.id.toUpperCase()}
+            </label>
+            <p className={style.paraMargin}>{obj.description}</p>
           </div>
         ))}
         <input
