@@ -8,7 +8,6 @@ import InvoiceLine from "../InvoiceLine/InvoiceLine";
 import Bag from "../Bag/Bag";
 import Shipping from "../Shipping/Shipping";
 
-
 class Cart extends React.Component {
   state = {
     quantity: {
@@ -36,16 +35,35 @@ class Cart extends React.Component {
     discountPercentage: "",
     promoCode: "",
     screenOnDisplay: "bag",
-    shipping: 'free',
+    shipping: "free",
+    buttonDirection: {
+      bag: {
+        next: "Next to shipping",
+        back: "Back to Home",
+        forward: 'shipping'
+      },
+      shipping: {
+        next: "Next to Payment",
+        back: "Back to Cart",
+        forward: 'payment',
+        backward: 'bag'
+      },
+      payment: {
+        next: "Submit Payment",
+        back: "Back to Shipping",
+        forward: 'confirmation',
+        backward: 'shipping'
+      }
+    },
   };
 
   handleState = (key, value) => {
-    this.setState({ [key]: value })
-  }
+    this.setState({ [key]: value });
+  };
 
   setDisplayScreen = (component) => {
-    this.setState({ screenOnDisplay: component})
-  }
+    this.setState({ screenOnDisplay: component });
+  };
 
   setQuantity = (e, product) => {
     this.setState((prevState) => ({
@@ -87,7 +105,8 @@ class Cart extends React.Component {
       discountPercentage,
       promoCode,
       screenOnDisplay,
-      shipping
+      shipping,
+      buttonDirection
     } = this.state;
 
     const promoInputs = [
@@ -119,8 +138,10 @@ class Cart extends React.Component {
 
     const discount = discountPercentage ? subTotal * discountPercentage : "-";
 
-    const shippingPrice = shipping === 'free' ? 0 : 5;
-    const total = (Number.isInteger(discount) ? subTotal - discount : subTotal) + shippingPrice;
+    const shippingPrice = shipping === "free" ? 0 : 5;
+    const total =
+      (Number.isInteger(discount) ? subTotal - discount : subTotal) +
+      shippingPrice;
 
     const invoiceInfo = [
       {
@@ -157,11 +178,18 @@ class Cart extends React.Component {
         />
       ),
       shipping: (
-        <Shipping 
+        <Shipping
           setDisplayScreen={(component) => this.setDisplayScreen(component)}
           handleState={this.handleState}
-          />
-        )
+        />
+      ),
+      payment: (
+        <Shipping
+          setDisplayScreen={(component) => this.setDisplayScreen(component)}
+          handleState={this.handleState}
+        />
+      ),
+      
     };
 
     return (
@@ -169,14 +197,18 @@ class Cart extends React.Component {
         <input
           className={style.returnHome}
           type="button"
-          onClick={() => this.props.nextPage("home-page")}
-          value="back to Home"
+          onClick={() => {
+            screenOnDisplay === "bag"
+              ? this.props.nextPage("home-page")
+              : this.setDisplayScreen(buttonDirection[screenOnDisplay]['backward']);
+          }}
+          value={buttonDirection[screenOnDisplay]["back"]}
         />
         <div className={style.flexContainer}>
           <div className={style.left}>{componentsObject[screenOnDisplay]}</div>
           <div className={style.right}>
             <h2 className={style.summary}>Summary</h2>
-            
+
             <h5 className={style.promoPrompt}>Do you have a Promo Code?</h5>
             <div className={style.promoContainer}>
               {promoInputs.map((obj) => (
@@ -204,14 +236,14 @@ class Cart extends React.Component {
               type="button"
               onClick={() => {
                 this.setErrorMessage();
-                this.getCartTotal() > 0 && this.setDisplayScreen("shipping");
+                this.getCartTotal() > 0 && this.setDisplayScreen(buttonDirection[screenOnDisplay]['forward']);
               }}
               onBlur={() => this.setState({ emptyCartError: "" })}
-              value="next to shipping"
+              value={buttonDirection[screenOnDisplay]["next"]}
             />
             <br />
             <label className={style.errorMessage} htmlFor="checkout">
-              {this.state.emptyCartError}
+              {emptyCartError}
             </label>
           </div>
         </div>

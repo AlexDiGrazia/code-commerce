@@ -18,6 +18,7 @@ class InputBase extends React.Component {
       labelClassList,
       inputBaseClass,
       shortDiv,
+      maxLength,
     } = this.props;
     return (
       <div className={`${inputBaseClass} ${shortDiv}`}>
@@ -31,6 +32,7 @@ class InputBase extends React.Component {
           text={text}
           name={name}
           value={value}
+          maxLength={maxLength}
           placeholder={placeholder}
           onChange={onChange}
           onClick={onClick}

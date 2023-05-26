@@ -5,6 +5,14 @@ import { countryList, states, cities } from "../../JS/constants";
 import Select from "../Select/Select";
 
 class Shipping extends React.Component {
+  state = {
+    zipcode: '',
+    cellPhoneAreaCode: '',
+    cellPhoneNumber: '',
+    teleAreaCode: '',
+    telephoneNumber: '',
+  };
+
   mapInputBase = (array) => {
     return array.map((obj) => (
       <InputBase
@@ -15,6 +23,9 @@ class Shipping extends React.Component {
         labelClassList={obj.labelClassList}
         inputBaseClass={style.inputBaseClass}
         shortDiv={obj.shortDiv}
+        onChange={obj.onChange}
+        value={obj.value}
+        maxLength={obj.maxLength}
       />
     ));
   };
@@ -24,6 +35,12 @@ class Shipping extends React.Component {
   //     <div className={style.flex}>{obj.map((item) => mapInputBase(item))}</div>
   //   ));
   // };
+
+  ensureNumbers = (e, state) => {
+    Number.isInteger(+e.target.value)
+      ? this.setState({ [state]: +e.target.value })
+      : null;
+  };
 
   render() {
     const { setDisplayScreen, handleState } = this.props;
@@ -60,6 +77,9 @@ class Shipping extends React.Component {
         classList: style.shortInputWidth,
         labelClassList: style.label,
         shortDiv: style.shortDiv,
+        onChange: (e) => this.ensureNumbers(e, "zipcode"),
+        value: this.state.zipcode,
+        maxLength: 5,
       },
     ];
 
@@ -72,11 +92,17 @@ class Shipping extends React.Component {
           classList: style.areaCode,
           labelClassList: style.label,
           shortDiv: style.shortDiv,
+          onChange: (e) => this.ensureNumbers(e, "cellPhoneAreaCode"),
+          value: this.state.cellPhoneAreaCode,
+          maxLength: 3,
         },
         {
           id: "cellphone",
           type: "text",
           classList: style.phoneNumber,
+          onChange: (e) => this.ensureNumbers(e, "cellPhoneNumber"),
+          value: this.state.cellPhoneNumber,
+          maxLength: 7,
         },
       ],
       [
@@ -87,11 +113,17 @@ class Shipping extends React.Component {
           classList: style.areaCode,
           labelClassList: style.label,
           shortDiv: style.shortDiv,
+          onChange: (e) => this.ensureNumbers(e, "teleAreaCode"),
+          value: this.state.teleAreaCode,
+          maxLength: 3,
         },
         {
           id: "telephone",
           type: "text",
           classList: style.phoneNumber,
+          onChange: (e) => this.ensureNumbers(e, "telephoneNumber"),
+          value: this.state.telephoneNumber,
+          maxLength: 7,
         },
       ],
     ];
