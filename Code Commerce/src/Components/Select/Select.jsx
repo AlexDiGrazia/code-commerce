@@ -4,7 +4,8 @@ import { capitalize } from "../../JS/functions";
 
 class Select extends React.Component {
   render() {
-    const { htmlFor, array, selected, label, value, onChange, disabled } = this.props;
+    const { htmlFor, array, selected, label, value, onChange, disabled } =
+      this.props;
     return (
       <div>
         {label && (
@@ -12,14 +13,16 @@ class Select extends React.Component {
             {capitalize(htmlFor)}
           </label>
         )}
-        <select 
-          name={htmlFor} 
-          id={htmlFor} 
+        <select
+          name={htmlFor}
+          id={htmlFor}
           className={style.select}
           value={value}
           onChange={onChange}
-          >
-          <option disabled={disabled} defaultValue>{selected}</option>
+        >
+          <option disabled={disabled} defaultValue>
+            {selected}
+          </option>
           {array.map((country) => (
             <option value={country}>{country}</option>
           ))}
