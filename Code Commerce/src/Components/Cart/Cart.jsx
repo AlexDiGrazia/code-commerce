@@ -7,6 +7,7 @@ import InputBase from "../InputBase/InputBase";
 import InvoiceLine from "../InvoiceLine/InvoiceLine";
 import Bag from "../Bag/Bag";
 import Shipping from "../Shipping/Shipping";
+import Payment from "../Payment/Payment";
 
 class Cart extends React.Component {
   state = {
@@ -184,10 +185,7 @@ class Cart extends React.Component {
         />
       ),
       payment: (
-        <Shipping
-          setDisplayScreen={(component) => this.setDisplayScreen(component)}
-          handleState={this.handleState}
-        />
+        <Payment />
       ),
       
     };

@@ -6,6 +6,12 @@ import Select from "../Select/Select";
 
 class Shipping extends React.Component {
   state = {
+    allFields: {
+      addressTitle: '',
+      fullName: '',
+      streetAddress: '',
+      streetAddress: '',
+    },
     zipcode: '',
     cellPhoneAreaCode: '',
     cellPhoneNumber: '',
@@ -42,6 +48,15 @@ class Shipping extends React.Component {
       : null;
   };
 
+  handleChange = (e, value) => {
+    this.setState((prev) => ({
+      allFields: {
+        ...prev.allFields,
+        [value]: e.target.value,
+      }
+    }))
+  }
+
   render() {
     const { setDisplayScreen, handleState } = this.props;
 
@@ -52,6 +67,7 @@ class Shipping extends React.Component {
         text: "Address title",
         classList: style.inputWidth,
         labelClassList: style.label,
+        onChange: (e) => this.handleChange(e, 'addressTitle'),
       },
       {
         id: "fullName",
@@ -59,6 +75,7 @@ class Shipping extends React.Component {
         text: "Full Name",
         classList: style.inputWidth,
         labelClassList: style.label,
+        onChange: (e) => this.handleChange(e, 'fullName'),
       },
       {
         id: "streetAddress",
@@ -66,6 +83,7 @@ class Shipping extends React.Component {
         text: "Street Address",
         classList: style.biggerInputWidth,
         labelClassList: style.label,
+        onChange: (e) => this.handleChange(e, 'streetAddress'),
       },
     ];
 
@@ -150,9 +168,9 @@ class Shipping extends React.Component {
         <div className={style.jurisdiction}>
           {this.mapInputBase(zipcode)}
           <div className={style.rightFlexBox}>
-            <Select htmlFor="country" array={countryList} />
-            <Select htmlFor="city" array={cities} />
-            <Select htmlFor="state" array={states} />
+            <Select htmlFor="country" array={countryList} selected="-Country"/>
+            <Select htmlFor="state" array={states} selected="-State"/>
+            <Select htmlFor="city" array={cities} selected="-City"/>
           </div>
         </div>
         {phoneArrays.map((obj) => (

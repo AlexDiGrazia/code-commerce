@@ -5,14 +5,14 @@ import { capitalize } from "../../JS/functions";
 class Select extends React.Component {
   render() {
 
-    const { htmlFor, array} = this.props
+    const { htmlFor, array, selected, label} = this.props
     return (
       <div>
-        <label htmlFor={htmlFor} className={style.label}>
+        {label && <label htmlFor={htmlFor} className={style.label}>
             {capitalize(htmlFor)}
-          </label>
+          </label>}
           <select name={htmlFor} id={htmlFor} className={style.select}>
-            <option defaultValue>-Select</option>
+            <option defaultValue>{selected}</option>
             {array.map((country) => (
               <option>{country}</option>
             ))}
