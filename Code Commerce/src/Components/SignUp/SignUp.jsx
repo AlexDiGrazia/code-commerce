@@ -199,7 +199,6 @@ class SignUp extends React.Component {
             let saveAccount = true;
             Object.values(error).forEach((value) => saveAccount = value.length ? false : saveAccount)
             Object.values(this.state).forEach((value) => saveAccount = value.length === 0 ? false : saveAccount)
-            console.log(saveAccount) 
             let errorMessage = 
               saveAccount 
                 ? ''

@@ -6,17 +6,18 @@ import Select from "../Select/Select";
 
 class Shipping extends React.Component {
   state = {
-    allFields: {
-      addressTitle: '',
-      fullName: '',
-      streetAddress: '',
-      streetAddress: '',
-    },
+    addressTitle: '',
+    fullName: '',
+    streetAddress: '',
+    streetAddress: '',
     zipcode: '',
     cellPhoneAreaCode: '',
     cellPhoneNumber: '',
     teleAreaCode: '',
     telephoneNumber: '',
+    country: '',
+    state: '',
+    city: '',
   };
 
   mapInputBase = (array) => {
@@ -67,7 +68,7 @@ class Shipping extends React.Component {
         text: "Address title",
         classList: style.inputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.handleChange(e, 'addressTitle'),
+        onChange: (e) => this.setState({ addressTitle: e.target.value}),
       },
       {
         id: "fullName",
@@ -75,7 +76,7 @@ class Shipping extends React.Component {
         text: "Full Name",
         classList: style.inputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.handleChange(e, 'fullName'),
+        onChange: (e) => this.setState({ fullName: e.target.value}),
       },
       {
         id: "streetAddress",
@@ -83,7 +84,7 @@ class Shipping extends React.Component {
         text: "Street Address",
         classList: style.biggerInputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.handleChange(e, 'streetAddress'),
+        onChange: (e) => this.setState({ streetAddress: e.target.value}),
       },
     ];
 
@@ -161,6 +162,30 @@ class Shipping extends React.Component {
       },
     ];
 
+    const selectorsArray = [
+      {
+        htmlFor: "country",
+        array: countryList,
+        selected: "-Country",
+        onChange: (e) => this.setState({ country: e.target.value}),
+        value: 'country',
+      },
+      {
+        htmlFor: "state",
+        array: states,
+        selected: "-State",
+        onChange: (e) => this.setState({ state: e.target.value}),
+        value: 'state',
+      },
+      {
+        htmlFor: "city",
+        array: cities,
+        selected: "-City",
+        onChange: (e) => this.setState({ city: e.target.value}),
+        value: 'city',
+      },
+    ]
+
     return (
       <div className={style.backgroundColor}>
         <h2>Shipping Information</h2>
@@ -168,9 +193,16 @@ class Shipping extends React.Component {
         <div className={style.jurisdiction}>
           {this.mapInputBase(zipcode)}
           <div className={style.rightFlexBox}>
-            <Select htmlFor="country" array={countryList} selected="-Country"/>
-            <Select htmlFor="state" array={states} selected="-State"/>
-            <Select htmlFor="city" array={cities} selected="-City"/>
+            {selectorsArray.map((obj) => (
+              <Select 
+                htmlFor={obj.htmlFor} 
+                array={obj.array} 
+                selected={obj.selected}
+                value={this.state[obj.value]}
+                onChange={(e) => this.setState({ [obj.value]: e.target.value})}
+                disabled={this.state[obj.value]}
+                />
+            ))}
           </div>
         </div>
         {phoneArrays.map((obj) => (
