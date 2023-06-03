@@ -10,12 +10,12 @@ export const capitalize = (str) => {
 };
 
 export const formatPhoneNumber = (str) => {
-  if(str.length > 6) {
+  if (str.length == 7 && !str.includes("-")) {
     const array = str.split("");
     array.splice(3, 0, " - ");
-    const newStr = array.join('');
-    return newStr
+    const newStr = array.join("");
+    return newStr;
   } else {
-    return str
+    return str;
   }
 };

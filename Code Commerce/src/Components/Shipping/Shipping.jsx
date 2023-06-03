@@ -45,6 +45,7 @@ class Shipping extends React.Component {
       handleShippingState,
       ensureNumbers,
       shippingPageState,
+      phoneNumberStateSetter
     } = this.props;
 
     const inputsArray = [
@@ -108,7 +109,7 @@ class Shipping extends React.Component {
           id: "cellphone",
           type: "text",
           classList: style.phoneNumber,
-          onChange: (e) => ensureNumbers(e, "cellPhoneNumber"),
+          onChange: (e) => phoneNumberStateSetter(e, "cellPhoneNumber"),
           value: shippingPageState.cellPhoneNumber,
           maxLength: 7,
         },
@@ -129,7 +130,7 @@ class Shipping extends React.Component {
           id: "telephone",
           type: "text",
           classList: style.phoneNumber,
-          onChange: (e) => ensureNumbers(e, "telephoneNumber"),
+          onChange: (e) => phoneNumberStateSetter(e, "telephoneNumber"),
           value: shippingPageState.telephoneNumber,
           maxLength: 7,
         },

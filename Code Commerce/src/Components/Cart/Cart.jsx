@@ -90,12 +90,24 @@ class Cart extends React.Component {
       ? this.setState((prev) => ({
           shippingPageState: {
             ...prev.shippingPageState,
-            [state]: e.target.value.replace(/\s/g, ''),
+            [state]: e.target.value.replace(/\s/g, ""),
           },
         }))
       : null;
   };
 
+  phoneNumberStateSetter = (e, state) => {
+    let mask = e.target.value.replace(/\s/g, "").replace(/[^0-9]/g, "");
+    if (mask.length) {
+      mask = formatPhoneNumber(mask);
+    }
+    this.setState((prev) => ({
+      shippingPageState: {
+        ...prev.shippingPageState,
+        [state]: mask,
+      },
+    }));
+  };
 
   setDisplayScreen = (component) => {
     this.setState({ screenOnDisplay: component });
@@ -134,14 +146,12 @@ class Cart extends React.Component {
         errorMessage = this.getCartTotal() === 0 && "No items in cart";
         break;
       case "shipping":
-        let allFieldsComplete = true
+        let allFieldsComplete = true;
         Object.values(this.state.shippingPageState).forEach(
-          (value) => allFieldsComplete = value.length === 0 ? false : allFieldsComplete 
-        )
-        errorMessage =
-          allFieldsComplete
-            ? ''
-            : "Please complete all fields";
+          (value) =>
+            (allFieldsComplete = value.length === 0 ? false : allFieldsComplete)
+        );
+        errorMessage = allFieldsComplete ? "" : "Please complete all fields";
         break;
     }
     this.setState({ allFieldsValidError: errorMessage });
@@ -151,12 +161,13 @@ class Cart extends React.Component {
     switch (type) {
       case "bag":
         return this.getCartTotal() > 0;
-        case "shipping":
-          let allFieldsComplete = true;
-          Object.values(this.state.shippingPageState).forEach(
-          (value) => allFieldsComplete = value.length === 0 ? false : allFieldsComplete
+      case "shipping":
+        let allFieldsComplete = true;
+        Object.values(this.state.shippingPageState).forEach(
+          (value) =>
+            (allFieldsComplete = value.length === 0 ? false : allFieldsComplete)
         );
-        return allFieldsComplete
+        return allFieldsComplete;
     }
   };
 
