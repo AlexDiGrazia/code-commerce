@@ -24,12 +24,16 @@ class Payment extends React.Component {
         classList={obj.classList}
         maxLength={obj.maxLength}
         shortDiv={obj.shortDiv}
+        onChange={obj.onChange}
+        value={obj.value}
       />
     ));
   };
 
   showInfo = {};
   render() {
+    const { maskCreditCard, paymentPageState, nestedStateObjectSetter } = this.props;
+
     const inputsArray = [
       {
         id: "name",
@@ -37,6 +41,8 @@ class Payment extends React.Component {
         name: "name",
         labelClassList: style.label,
         classList: style.inputWidth,
+        onChange: (e) => nestedStateObjectSetter('paymentPageState', 'cardholderName', (e.target.value.replace((/[^a-zA-Z\s-]/g), ''))),
+        value: paymentPageState.cardholderName,
       },
       {
         id: "number",
@@ -44,6 +50,8 @@ class Payment extends React.Component {
         name: "number",
         labelClassList: style.label,
         classList: style.inputWidth,
+        onChange: (e) => maskCreditCard(e),
+        value: paymentPageState.cardNumber,
       },
     ];
 

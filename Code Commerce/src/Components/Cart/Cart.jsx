@@ -70,11 +70,31 @@ class Cart extends React.Component {
       state: "",
       city: "",
     },
+    paymentPageState: {
+      cardholderName: "",
+      cardNumber: "",
+      expiry: {
+        month: "",
+        year: "",
+      },
+      cvv: "",
+    },
   };
 
   handleState = (key, value) => {
     this.setState({ [key]: value });
   };
+
+  nestedStateObjectSetter = (object, key, value ) => {
+    console.log(value)
+    this.setState((prev) => ({
+      [object]: {
+        ...prev.object,
+        [key]: value,
+      },
+    }));
+  };
+
 
   handleShippingState = (key, value) => {
     this.setState((prev) => ({
@@ -107,6 +127,26 @@ class Cart extends React.Component {
         [state]: mask,
       },
     }));
+  };
+
+  maskCreditCard = (e) => {
+    let mask = e.target.value.replace(/\s/g, "").replace(/[^0-9]/g, "");
+    if (mask.length) {
+      mask = mask.match(new RegExp(".{1,4}", "g")).join(" ");
+      this.setState((prev) => ({
+        paymentPageState: {
+          ...prev.paymentPageState,
+          cardNumber: mask,
+        },
+      }));
+    } else {
+      this.setState((prev) => ({
+        paymentPageState: {
+          ...prev.paymentPageState,
+          cardNumber: "",
+        },
+      }));
+    }
   };
 
   setDisplayScreen = (component) => {
@@ -163,10 +203,10 @@ class Cart extends React.Component {
         return this.getCartTotal() > 0;
       case "shipping":
         let allFieldsComplete = true;
-        Object.values(this.state.shippingPageState).forEach(
-          (value) =>
-            (allFieldsComplete = value.length === 0 ? false : allFieldsComplete)
-        );
+        // Object.values(this.state.shippingPageState).forEach(
+        //   (value) =>
+        //     (allFieldsComplete = value.length === 0 ? false : allFieldsComplete)
+        // );
         return allFieldsComplete;
     }
   };
@@ -183,6 +223,7 @@ class Cart extends React.Component {
       shippingOption,
       buttonDirection,
       shippingPageState,
+      paymentPageState,
     } = this.state;
 
     const promoInputs = [
@@ -266,7 +307,13 @@ class Cart extends React.Component {
           phoneNumberStateSetter={this.phoneNumberStateSetter}
         />
       ),
-      payment: <Payment />,
+      payment: (
+        <Payment
+          maskCreditCard={this.maskCreditCard}
+          paymentPageState={paymentPageState}
+          nestedStateObjectSetter={this.nestedStateObjectSetter}
+        />
+      ),
     };
 
     return (
