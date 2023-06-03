@@ -3,23 +3,9 @@ import style from "./Shipping.module.css";
 import InputBase from "../InputBase/InputBase";
 import { countryList, states, cities } from "../../JS/constants";
 import Select from "../Select/Select";
+import { formatPhoneNumber } from "../../JS/functions";
 
 class Shipping extends React.Component {
-  state = {
-    addressTitle: '',
-    fullName: '',
-    streetAddress: '',
-    streetAddress: '',
-    zipcode: '',
-    cellPhoneAreaCode: '',
-    cellPhoneNumber: '',
-    teleAreaCode: '',
-    telephoneNumber: '',
-    country: '',
-    state: '',
-    city: '',
-  };
-
   mapInputBase = (array) => {
     return array.map((obj) => (
       <InputBase
@@ -43,23 +29,23 @@ class Shipping extends React.Component {
   //   ));
   // };
 
-  ensureNumbers = (e, state) => {
-    Number.isInteger(+e.target.value)
-      ? this.setState({ [state]: +e.target.value })
-      : null;
-  };
-
   handleChange = (e, value) => {
     this.setState((prev) => ({
       allFields: {
         ...prev.allFields,
         [value]: e.target.value,
-      }
-    }))
-  }
+      },
+    }));
+  };
 
   render() {
-    const { setDisplayScreen, handleState } = this.props;
+    const {
+      setDisplayScreen,
+      handleState,
+      handleShippingState,
+      ensureNumbers,
+      shippingPageState,
+    } = this.props;
 
     const inputsArray = [
       {
@@ -68,7 +54,8 @@ class Shipping extends React.Component {
         text: "Address title",
         classList: style.inputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.setState({ addressTitle: e.target.value}),
+        onChange: (e) => handleShippingState("addressTitle", e.target.value.trim()),
+        value: shippingPageState.addressTitle,
       },
       {
         id: "fullName",
@@ -76,7 +63,8 @@ class Shipping extends React.Component {
         text: "Full Name",
         classList: style.inputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.setState({ fullName: e.target.value}),
+        onChange: (e) => handleShippingState("fullName", e.target.value.trim()),
+        value: shippingPageState.fullName,
       },
       {
         id: "streetAddress",
@@ -84,7 +72,8 @@ class Shipping extends React.Component {
         text: "Street Address",
         classList: style.biggerInputWidth,
         labelClassList: style.label,
-        onChange: (e) => this.setState({ streetAddress: e.target.value}),
+        onChange: (e) => handleShippingState("streetAddress", e.target.value.trim()),
+        value: shippingPageState.streetAddress,
       },
     ];
 
@@ -96,8 +85,8 @@ class Shipping extends React.Component {
         classList: style.shortInputWidth,
         labelClassList: style.label,
         shortDiv: style.shortDiv,
-        onChange: (e) => this.ensureNumbers(e, "zipcode"),
-        value: this.state.zipcode,
+        onChange: (e) => ensureNumbers(e, "zipcode"),
+        value: shippingPageState.zipcode,
         maxLength: 5,
       },
     ];
@@ -111,16 +100,16 @@ class Shipping extends React.Component {
           classList: style.areaCode,
           labelClassList: style.label,
           shortDiv: style.shortDiv,
-          onChange: (e) => this.ensureNumbers(e, "cellPhoneAreaCode"),
-          value: this.state.cellPhoneAreaCode,
+          onChange: (e) => ensureNumbers(e, "cellPhoneAreaCode"),
+          value: shippingPageState.cellPhoneAreaCode,
           maxLength: 3,
         },
         {
           id: "cellphone",
           type: "text",
           classList: style.phoneNumber,
-          onChange: (e) => this.ensureNumbers(e, "cellPhoneNumber"),
-          value: this.state.cellPhoneNumber,
+          onChange: (e) => ensureNumbers(e, "cellPhoneNumber"),
+          value: shippingPageState.cellPhoneNumber,
           maxLength: 7,
         },
       ],
@@ -132,16 +121,16 @@ class Shipping extends React.Component {
           classList: style.areaCode,
           labelClassList: style.label,
           shortDiv: style.shortDiv,
-          onChange: (e) => this.ensureNumbers(e, "teleAreaCode"),
-          value: this.state.teleAreaCode,
+          onChange: (e) => ensureNumbers(e, "teleAreaCode"),
+          value: shippingPageState.teleAreaCode,
           maxLength: 3,
         },
         {
           id: "telephone",
           type: "text",
           classList: style.phoneNumber,
-          onChange: (e) => this.ensureNumbers(e, "telephoneNumber"),
-          value: this.state.telephoneNumber,
+          onChange: (e) => ensureNumbers(e, "telephoneNumber"),
+          value: shippingPageState.telephoneNumber,
           maxLength: 7,
         },
       ],
@@ -167,24 +156,21 @@ class Shipping extends React.Component {
         htmlFor: "country",
         array: countryList,
         selected: "-Country",
-        onChange: (e) => this.setState({ country: e.target.value}),
-        value: 'country',
+        value: "country",
       },
       {
         htmlFor: "state",
         array: states,
         selected: "-State",
-        onChange: (e) => this.setState({ state: e.target.value}),
-        value: 'state',
+        value: "state",
       },
       {
         htmlFor: "city",
         array: cities,
         selected: "-City",
-        onChange: (e) => this.setState({ city: e.target.value}),
-        value: 'city',
+        value: "city",
       },
-    ]
+    ];
 
     return (
       <div className={style.backgroundColor}>
@@ -194,14 +180,14 @@ class Shipping extends React.Component {
           {this.mapInputBase(zipcode)}
           <div className={style.rightFlexBox}>
             {selectorsArray.map((obj) => (
-              <Select 
-                htmlFor={obj.htmlFor} 
-                array={obj.array} 
+              <Select
+                htmlFor={obj.htmlFor}
+                array={obj.array}
                 selected={obj.selected}
-                value={this.state[obj.value]}
-                onChange={(e) => this.setState({ [obj.value]: e.target.value})}
-                disabled={this.state[obj.value]}
-                />
+                value={shippingPageState[obj.value]}
+                onChange={(e) => handleShippingState([obj.value], e.target.value )}
+                disabled={shippingPageState[obj.value]}
+              />
             ))}
           </div>
         </div>
@@ -217,7 +203,7 @@ class Shipping extends React.Component {
               name="shippingMethod"
               id={obj.id}
               defaultChecked={obj.defaultChecked}
-              onChange={() => handleState("shipping", obj.shippingState)}
+              onChange={() => handleState("shippingOption", obj.shippingState)}
             />
             <label className={style.marginRight} htmlFor="shippingMethod">
               {obj.id.toUpperCase()}
@@ -225,7 +211,15 @@ class Shipping extends React.Component {
             <p className={style.paraMargin}>{obj.description}</p>
           </div>
         ))}
-        <input
+      </div>
+    );
+  }
+}
+
+export default Shipping;
+
+{
+  /* <input
           className={style.button}
           type="button"
           onClick={() => setDisplayScreen("bag")}
@@ -236,10 +230,5 @@ class Shipping extends React.Component {
           type="button"
           onClick={() => this.props.nextPage("payment")}
           value="next to payment"
-        />
-      </div>
-    );
-  }
+        /> */
 }
-
-export default Shipping;

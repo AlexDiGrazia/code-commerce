@@ -2,7 +2,7 @@ import React from "react";
 import style from "./Cart.module.css";
 import CartItem from "../CartItem/CartItem";
 import { PHOTOS } from "../../Photos/photos";
-import { formatToUSDCurrency } from "../../JS/functions";
+import { formatPhoneNumber, formatToUSDCurrency } from "../../JS/functions";
 import InputBase from "../InputBase/InputBase";
 import InvoiceLine from "../InvoiceLine/InvoiceLine";
 import Bag from "../Bag/Bag";
@@ -32,35 +32,70 @@ class Cart extends React.Component {
       wah: 200,
       marshall: 3100,
     },
-    emptyCartError: "",
+    allFieldsValidError: "",
     discountPercentage: "",
     promoCode: "",
     screenOnDisplay: "bag",
-    shipping: "free",
+    shippingOption: "free",
     buttonDirection: {
       bag: {
         next: "Next to shipping",
         back: "Back to Home",
-        forward: 'shipping'
+        forward: "shipping",
       },
       shipping: {
         next: "Next to Payment",
         back: "Back to Cart",
-        forward: 'payment',
-        backward: 'bag'
+        forward: "payment",
+        backward: "bag",
       },
       payment: {
         next: "Submit Payment",
         back: "Back to Shipping",
-        forward: 'confirmation',
-        backward: 'shipping'
-      }
+        forward: "confirmation",
+        backward: "shipping",
+      },
+    },
+    shippingPageState: {
+      addressTitle: "",
+      fullName: "",
+      streetAddress: "",
+      streetAddress: "",
+      zipcode: "",
+      cellPhoneAreaCode: "",
+      cellPhoneNumber: "",
+      teleAreaCode: "",
+      telephoneNumber: "",
+      country: "",
+      state: "",
+      city: "",
     },
   };
 
   handleState = (key, value) => {
     this.setState({ [key]: value });
   };
+
+  handleShippingState = (key, value) => {
+    this.setState((prev) => ({
+      shippingPageState: {
+        ...prev.shippingPageState,
+        [key]: value,
+      },
+    }));
+  };
+
+  ensureNumbers = (e, state) => {
+    Number.isInteger(+e.target.value)
+      ? this.setState((prev) => ({
+          shippingPageState: {
+            ...prev.shippingPageState,
+            [state]: e.target.value.replace(/\s/g, ''),
+          },
+        }))
+      : null;
+  };
+
 
   setDisplayScreen = (component) => {
     this.setState({ screenOnDisplay: component });
@@ -92,9 +127,37 @@ class Cart extends React.Component {
     return Object.values(this.state.quantity).reduce((a, b) => a + b);
   };
 
-  setErrorMessage = () => {
-    const errorMessage = this.getCartTotal() === 0 && "No items in cart";
-    this.setState({ emptyCartError: errorMessage });
+  setErrorMessage = (type) => {
+    let errorMessage;
+    switch (type) {
+      case "bag":
+        errorMessage = this.getCartTotal() === 0 && "No items in cart";
+        break;
+      case "shipping":
+        let allFieldsComplete = true
+        Object.values(this.state.shippingPageState).forEach(
+          (value) => allFieldsComplete = value.length === 0 ? false : allFieldsComplete 
+        )
+        errorMessage =
+          allFieldsComplete
+            ? ''
+            : "Please complete all fields";
+        break;
+    }
+    this.setState({ allFieldsValidError: errorMessage });
+  };
+
+  checkAllFieldsValid = (type) => {
+    switch (type) {
+      case "bag":
+        return this.getCartTotal() > 0;
+        case "shipping":
+          let allFieldsComplete = true;
+          Object.values(this.state.shippingPageState).forEach(
+          (value) => allFieldsComplete = value.length === 0 ? false : allFieldsComplete
+        );
+        return allFieldsComplete
+    }
   };
 
   render() {
@@ -102,12 +165,13 @@ class Cart extends React.Component {
       quantity,
       display,
       price,
-      emptyCartError,
+      allFieldsValidError,
       discountPercentage,
       promoCode,
       screenOnDisplay,
-      shipping,
-      buttonDirection
+      shippingOption,
+      buttonDirection,
+      shippingPageState,
     } = this.state;
 
     const promoInputs = [
@@ -139,10 +203,10 @@ class Cart extends React.Component {
 
     const discount = discountPercentage ? subTotal * discountPercentage : "-";
 
-    const shippingPrice = shipping === "free" ? 0 : 5;
+    const freeOrExpressShipping = shippingOption === "free" ? 0 : 5;
     const total =
       (Number.isInteger(discount) ? subTotal - discount : subTotal) +
-      shippingPrice;
+      freeOrExpressShipping;
 
     const invoiceInfo = [
       {
@@ -157,7 +221,10 @@ class Cart extends React.Component {
       },
       {
         name: "Shipping & Handling:",
-        price: shipping === "$5.00" ? formatToUSDCurrency(shippingPrice) : "-",
+        price:
+          shippingOption === "$5.00"
+            ? formatToUSDCurrency(freeOrExpressShipping)
+            : "-",
       },
       {
         name: "Discount:",
@@ -182,12 +249,13 @@ class Cart extends React.Component {
         <Shipping
           setDisplayScreen={(component) => this.setDisplayScreen(component)}
           handleState={this.handleState}
+          handleShippingState={this.handleShippingState}
+          ensureNumbers={this.ensureNumbers}
+          shippingPageState={shippingPageState}
+          phoneNumberStateSetter={this.phoneNumberStateSetter}
         />
       ),
-      payment: (
-        <Payment />
-      ),
-      
+      payment: <Payment />,
     };
 
     return (
@@ -198,7 +266,9 @@ class Cart extends React.Component {
           onClick={() => {
             screenOnDisplay === "bag"
               ? this.props.nextPage("home-page")
-              : this.setDisplayScreen(buttonDirection[screenOnDisplay]['backward']);
+              : this.setDisplayScreen(
+                  buttonDirection[screenOnDisplay]["backward"]
+                );
           }}
           value={buttonDirection[screenOnDisplay]["back"]}
         />
@@ -233,15 +303,18 @@ class Cart extends React.Component {
               name="checkout"
               type="button"
               onClick={() => {
-                this.setErrorMessage();
-                this.getCartTotal() > 0 && this.setDisplayScreen(buttonDirection[screenOnDisplay]['forward']);
+                this.setErrorMessage(screenOnDisplay);
+                this.checkAllFieldsValid(screenOnDisplay) &&
+                  this.setDisplayScreen(
+                    buttonDirection[screenOnDisplay]["forward"]
+                  );
               }}
-              onBlur={() => this.setState({ emptyCartError: "" })}
+              onBlur={() => this.setState({ allFieldsValidError: "" })}
               value={buttonDirection[screenOnDisplay]["next"]}
             />
             <br />
             <label className={style.errorMessage} htmlFor="checkout">
-              {emptyCartError}
+              {allFieldsValidError}
             </label>
           </div>
         </div>
