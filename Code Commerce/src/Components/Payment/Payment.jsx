@@ -5,34 +5,86 @@ import Select from "../Select/Select";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleQuestion, faDisplay } from "@fortawesome/free-solid-svg-icons";
+import {
+  cardNumberValidation,
+  OTHERCARDS,
+  securityCodeValidation,
+} from "../../JS/creditCard";
 
 // import inputBaseStyle from "../InputBase/InputBase.module.css"
 
 class Payment extends React.Component {
   state = {
     cvvInfo: "displayNone",
+    cardType: "",
+    error: {},
   };
 
   mapInputBase = (array) => {
     return array.map((obj) => (
-      <InputBase
-        id={obj.id}
-        text={obj.text}
-        name={obj.name}
-        inputBaseClass={style.inputBaseClass}
-        labelClassList={obj.labelClassList}
-        classList={obj.classList}
-        maxLength={obj.maxLength}
-        shortDiv={obj.shortDiv}
-        onChange={obj.onChange}
-        value={obj.value}
-      />
+      <div>
+        <InputBase
+          id={obj.id}
+          text={obj.text}
+          name={obj.name}
+          inputBaseClass={style.inputBaseClass}
+          labelClassList={obj.labelClassList}
+          classList={obj.classList}
+          maxLength={obj.maxLength}
+          shortDiv={obj.shortDiv}
+          onChange={obj.onChange}
+          value={obj.value}
+          onBlur={obj.onBlur}
+          noMarginBottom={obj.noMarginBottom}
+        />
+        {obj.errorM && <p className={style.error}>{obj.errorM}</p>}
+      </div>
     ));
+  };
+
+  findDebitCardType = (cardNumber) => {
+    const regexPattern = {
+      MASTERCARD: /^5[1-5][0-9]{1,}|^2[2-7][0-9]{1,}$/,
+      VISA: /^4[0-9]{2,}$/,
+      AMERICAN_EXPRESS: /^3[47][0-9]{5,}$/,
+      DISCOVER: /^6(?:011|5[0-9]{2})[0-9]{3,}$/,
+    };
+    for (const card in regexPattern) {
+      if (cardNumber.replace(/[^\d]/g, "").match(regexPattern[card]))
+        return card;
+    }
+    return "";
+  };
+
+  handleBlur = (value, type) => {
+    let errorText;
+    switch (type) {
+      case "card":
+        errorText = cardNumberValidation(value);
+        this.setState((prevState) => ({
+          cardType: this.findDebitCardType(value),
+          error: {
+            ...prevState.error,
+            cardError: errorText,
+          },
+        }));
+        break;
+      case "securityCode":
+        errorText = securityCodeValidation(3, value);
+        this.setState((prevState) => ({
+          error: { ...prevState.error, securityCodeError: errorText },
+        }));
+        break;
+      default:
+        break;
+    }
   };
 
   showInfo = {};
   render() {
-    const { maskCreditCard, paymentPageState, nestedStateObjectSetter } = this.props;
+    const { error } = this.state;
+    const { maskCreditCard, paymentPageState, nestedStateObjectSetter } =
+      this.props;
 
     const inputsArray = [
       {
@@ -41,7 +93,12 @@ class Payment extends React.Component {
         name: "name",
         labelClassList: style.label,
         classList: style.inputWidth,
-        onChange: (e) => nestedStateObjectSetter('paymentPageState', 'cardholderName', (e.target.value.replace((/[^a-zA-Z\s-]/g), ''))),
+        onChange: (e) =>
+          nestedStateObjectSetter(
+            "paymentPageState",
+            "cardholderName",
+            e.target.value.replace(/[^a-zA-Z\s-]/g, "")
+          ),
         value: paymentPageState.cardholderName,
       },
       {
@@ -50,8 +107,12 @@ class Payment extends React.Component {
         name: "number",
         labelClassList: style.label,
         classList: style.inputWidth,
+        maxLength: OTHERCARDS.length,
         onChange: (e) => maskCreditCard(e),
         value: paymentPageState.cardNumber,
+        onBlur: (e) => this.handleBlur(e.target.value, "card"),
+        errorM: error.cardError,
+        noMarginBottom: error.cardError && error.cardError.length > 0 && style.noMarginBottom
       },
     ];
 
@@ -64,6 +125,8 @@ class Payment extends React.Component {
         classList: style.cvvInputWidth,
         maxLength: 3,
         shortDiv: style.shortDiv,
+        onBlur: (e) => this.handleBlur(e.target.value, "securityCode"),
+        errorM: error.securityCodeError,
       },
     ];
 
@@ -90,6 +153,7 @@ class Payment extends React.Component {
           <div className={style.cvvDiv}>
             {this.mapInputBase(cvv)}
             <FontAwesomeIcon
+              className={style.questionMarkIcon}
               icon={faCircleQuestion}
               onMouseOver={() => this.setState({ cvvInfo: "displayBlock" })}
               onMouseOut={() => this.setState({ cvvInfo: "displayNone" })}

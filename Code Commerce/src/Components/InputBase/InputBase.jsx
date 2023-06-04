@@ -19,9 +19,10 @@ class InputBase extends React.Component {
       inputBaseClass,
       shortDiv,
       maxLength,
+      noMarginBottom
     } = this.props;
     return (
-      <div className={`${inputBaseClass} ${shortDiv}`}>
+      <div className={`${inputBaseClass} ${shortDiv} ${noMarginBottom}`}>
         <label htmlFor={id} className={`${style.label} ${labelClassList}`}>
           {text}
         </label>

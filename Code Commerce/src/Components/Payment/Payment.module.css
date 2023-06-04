@@ -17,6 +17,10 @@
   margin-bottom: 20px;
 }
 
+.noMarginBottom {
+  margin-bottom: 0;
+}
+
 .inputWidth {
   width: 50%;
 }
@@ -28,7 +32,7 @@
 
 .cvvDiv {
   display: flex;
-  align-items: center;
+  position: relative;
 }
 
 .cvvInputWidth {
@@ -58,12 +62,27 @@
   display: block;
 }
 
+.questionMarkIcon {
+  position: absolute;
+  left: 190px;
+  top: 6px;
+}
+
 .cvvInfo {
   width: 150px;
   height: 84px;
-  background-image: url('cvv.png');
+  background-image: url("cvv.png");
   margin-left: 20px;
   background-size: cover;
   background-repeat: no-repeat;
-  border-radius: 8px; 
+  border-radius: 8px;
+}
+
+.error {
+  margin-left: 96px;
+  margin-top: 10px;
+  max-width: 89%;
+  color: #a21616;
+  font-size: 14px;
+  font-weight: 600;
 }
